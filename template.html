@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html xmlns:th=“http://www.thymeleaf.org”>
+
+<head>
+    <link rel="stylesheet" th:href="@{classpath:static/styles/remittance-advice/main.css}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            margin: 0.6in;
+        }
+
+        body {
+            font-family: Roboto;
+        }
+
+        h1 {
+            color: rgb(0, 0, 0);
+        }
+
+        th {
+            border-bottom: solid 2px;
+            white-space: nowrap;
+        }
+
+        th,
+        td,
+        tr {
+            padding: 3px;
+        }
+
+        #summary-container th {
+            min-width: 97px;
+        }
+
+        #details-container-outer {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        #details-container-inner-left {
+            width: 100%;
+        }
+
+        #details-container-inner-right {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        #summary-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 50px;
+            margin-bottom: 40px;
+        }
+
+        #total-paid {
+            border-collapse: collapse;
+            border-top: solid 2px;
+            border-bottom: solid 2px;
+        }
+
+        #invoices,
+        #credit-notes {
+            margin-bottom: 50px;
+        }
+
+        #invoices,
+        #credit-notes {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .payment-details {
+
+            margin-bottom: 10px;
+        }
+
+        .payment-details tbody tr:nth-child(odd) {
+            font-weight: bold;
+        }
+
+        #invoices tbody tr:nth-child(even),
+        #credit-notes tbody tr:nth-child(odd) {
+            background: rgb(231, 231, 231);
+        }
+
+        .table-foot td {
+            background: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <h1>REMITTANCE ADVICE</h1>
+    </div>
+    <div id="details-container-outer">
+        <div id="details-container-inner-left">
+            <table id="supplier-details">
+                <tr>
+                    <td th:text="'Company Name: ' + ${supplier.companyName}">Supplier Limited</td>
+                </tr>
+                <tr>
+                    <td th:text="'Email: ' + ${supplierEmail}">supplieremail@example.com</td>
+                </tr>
+            </table>
+        </div>
+        <div id="details-container-inner-right">
+            <div>
+                <table class="payment-details">
+                    <tr>
+                        <td>Payment Date</td>
+                    </tr>
+                    <tr>
+                        <td th:text="': ' + ${plannedPaymentDate}">21 April 2022</td>
+                    </tr>
+                </table>
+                <table class="payment-details">
+                    <tr>
+                        <td>Sent Date</td>
+                    </tr>
+                    <tr>
+                        <td th:text="': ' + ${remittanceSentDate}">27 March 2022</td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <table class="company-details">
+                    <tr>
+                        <td th:text="'Company Name: ' + ${buyer.companyName}">Farro Fresh Limited</td>
+                    </tr>
+                    <tr>
+                        <td th:text="'Email: ' + ${buyerEmail}">accounts@farro.co.nz</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="summary-container">
+        <table id="total-paid">
+            <thead>
+                <th style="text-align:left">Total Paid</th>
+                <th style="text-align:right" th:text="${totalPaid}">$2,000</th>
+            </thead>
+        </table>
+    </div>
+    <div>
+        <table id="invoices">
+            <colgroup>
+                <col style="width:20%" />
+                <col style="width:30%" />
+                <col style="width:15%" />
+                <col style="width:15%" />
+                <col style="width:15%" />
+            </colgroup>
+            <thead>
+                <th style="text-align:left">Invoice Date</th>
+                <th style="text-align:left">Reference</th>
+                <th style="text-align:right">Invoice Total</th>
+                <th style="text-align:right">Paid</th>
+                <th style="text-align:right">Owing</th>
+            </thead>
+            <tbody>
+                <tr th:each="item, iterStat: ${invoices}">
+                    <td th:text="${item.issueDate}">31 April 2022</td>
+                    <td th:text="${item.billNumber}">2386000 OR 480808</td>
+                    <td style="text-align:right" th:text="${item.total}">$1,200.00</td>
+                    <td style="text-align:right" th:text="${item.total}">$1,200.00</td>
+                    <td style="text-align:right">$0.00</td>
+                </tr>
+                <!--Totals row for invoices-->
+                <tr class="table-foot">
+                    <td></td>
+                    <td style="text-align:left">Total</td>
+                    <td style="text-align:right" th:text="${totalPaid}">$1,200.00</td>
+                    <td style="text-align:right" th:text="${totalPaid}">$1,200.00</td>
+                    <td style="text-align:right">$0.00</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <h2>Credit Note Activity</h2>
+    <div>
+        <table th:each="item, iterStat: ${}" id="credit-notes">
+            <colgroup>
+                <col style="width:20%" />
+                <col style="width:30%" />
+                <col style="width:15%" />
+                <col style="width:15%" />
+                <col style="width:15%" />
+            </colgroup>
+            <thead>
+                <th style="text-align:left">Date</th>
+                <th style="text-align:left">Reference</th>
+                <th style="text-align:right">Invoice Total</th>
+                <th style="text-align:right">Paid</th>
+                <th style="text-align:right">Owing</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td th:text="${item.issueDate}">31 April 2022</td>
+                    <td th:text="${item.billNumber}">2386000 OR 480808</td>
+                    <td style="text-align:right" th:text="${item.total}">$1,200.00</td>
+                    <td style=></td>
+                    <td style=></td>
+                </tr>
+                <tr>
+                    <td th:text="${}">02 May 2022</td>
+                    <td th:text="${item.billNumber}">Payment</td>
+                    <td style="text-align:right"></td>
+                    <!--Payment amount-->
+                    <td style="text-align:right" th:text="${}">$1,000.00</td>
+                    <!--Invoice total - Payment amount-->
+                    <td style="text-align:right" th:text="${item.total}">$200.00</td>
+                </tr>
+                <tr>
+                    <!--Credit note creation or applied date-->
+                    <td th:text="${}">31 April 2022</td>
+                    <!--Credit note reference-->
+                    <td th:text="${}">Credit Note - OR 480808</td>
+                    <td style="text-align:right"></td>
+                    <!--Credit amount applied-->
+                    <td style="text-align:right" th:text="${}">$200.00</td>
+                    <!--Invoice total - payment amount - credit applied (should always be $0.00?)-->
+                    <td style="text-align:right" th:text="${}">$0.00</td>
+                </tr>
+                 <!--Totals row for credit notes-->
+                <tr class="table-foot">
+                    <td></td>
+                    <td style="text-align:left">Total</td>
+                    <td style="text-align:right"></td>
+                    <td style="text-align:right" th:text="${}">$1,200.00</td>
+                    <!--Payment + credit applied-->
+                    <td style="text-align:right" th:text="${item.total}">$0.00</td>
+                    <!--Credit note creation or applied date-->
+                </tr>
+            </tbody>
+</body>
+
+</html>
